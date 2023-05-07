@@ -5,6 +5,7 @@ from wtforms.fields import TextAreaField, HiddenField, EmailField
 
 class CreateQuestionForm(Form):
     id = HiddenField()
+    idquiz = HiddenField()
     question = StringField('Spørsmål', validators =[DataRequired()])
     alt1 = StringField('Alternativ 1', validators =[DataRequired()])
     alt2 = StringField('Alternativ 2', validators =[DataRequired()])

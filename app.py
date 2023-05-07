@@ -128,8 +128,43 @@ def redirectToQuestionsByQuiz():
     session['quiz'] = request.form['quiz']
     return redirect(url_for('questionsByQuiz'))
 
+@app.route("/questionsbyquiz", methods=["GET", "POST"]) 
+@login_required
+def questionsByQuiz():
+    id = request.args.get('id')
+    if not id:
+        quiz = session['quiz']
+        with MyDb() as db:
+            id = [(str(item)).strip("\'(),") for item in db.getQuizId(quiz)]
+            quizid = int(id[0])
+        
+        with MyDb() as db:
+            result = db.questionsByQuiz(quizid)
+            questions = [Question(*x) for x in result]
+        if len(questions)< 1: #Redirect om quizen er tom, for å forhindre error
+            return redirect(url_for('quizMaster'))
+        
+        return render_template("questionsbyquiz.html", questions = questions)
+    else:
+        with MyDb() as db:
+            spm = db.getQuestion(id)
+            if spm is None:
+                return render_template('error.html',
+                                       msg='Invalid parameter')
+            else:
+                question = Question(*spm)
+                form = CreateQuestionForm()
+                form.id.data = question.id
+                form.idquiz.data = question.idquiz
+                form.question.data = question.question
+                form.alt1.data = question.alt1
+                form.alt2.data = question.alt2
+                form.alt3.data = question.alt3
+                return render_template("questionsbyquiz.html", form = form, id = id)
 
-#neste: Questionsbyquiz for admin
+
+#neste: Questionsbyquiz for admin - fiks quizclasses mot ny database.
+#sørg for at de e fiksa med quizid og questionid
 #answerquiz for user
 #admin gå igjennom besvarte quizer - kommentere og godkjenne
 #menyvalg for user å se ferdig godkjente/kommenterte quizer

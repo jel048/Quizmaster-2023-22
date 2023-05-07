@@ -46,7 +46,7 @@ class MyDb:
     def getQuizId(self, quiznavn):
         try:
             self.cursor.execute("SELECT idquiz FROM Qquiz WHERE quiznavn = (%s)", (quiznavn,))
-            result = self.cursor.fetchall()
+            result = self.cursor.fetchone()
         except mysql.connector.Error as err:
                 print(err)
         return result
@@ -82,9 +82,9 @@ class MyDb:
                 print(err)
         return result
     
-    def questionsByQuiz(self, quiz):
+    def questionsByQuiz(self, quizid):
         try:
-            self.cursor.execute("SELECT questionid, idquiz, question, alt1, alt2, alt3 FROM Qquestions WHERE idquiz = (%s)", (quiz,))
+            self.cursor.execute("SELECT questionid, idquiz, question, alt1, alt2, alt3 FROM Qquestions WHERE idquiz = (%s)", (quizid,))
             result = self.cursor.fetchall()
         except mysql.connector.Error as err:
                 print(err)
@@ -98,9 +98,9 @@ class MyDb:
                 print(err)
                 
                 
-    def getQuestions(self, id):
+    def getQuestion(self, id):
         try:
-            self.cursor.execute("SELECT questionid, idquiz, question, alt1, alt2, alt3 FROM Qquestions WHERE idquiz = (%s)", (id,))
+            self.cursor.execute("SELECT questionid, idquiz, question, alt1, alt2, alt3 FROM Qquestions WHERE questionid = (%s)", (id,))
             result = self.cursor.fetchall()
         except mysql.connector.Error as err:
                 print(err)

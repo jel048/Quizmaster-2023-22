@@ -3,6 +3,7 @@
 <h1>Quizer</h1>
 {% if session['isAdmin'] == True %}
 <form method = "post" action = "{{url_for('redirectToQuestionsByQuiz')}}"> 
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 
     <table>
     {% for quiz in quizer %}
@@ -14,6 +15,7 @@
 {% else %}
 
 <form method = "post" action = "{{url_for('redirectToAnswerQuiz')}}"> 
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 
     <table>
     {% for quiz in quizer %}

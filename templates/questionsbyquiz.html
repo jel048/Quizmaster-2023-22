@@ -9,7 +9,6 @@
       <th>Alternativ 1</th>
       <th>Alternativ 2</th>
       <th>Alternativ 3</th>
-      <th>Riktig svar</th>
       <th>Endre</th>
    </thead>
    <tbody>
@@ -22,7 +21,6 @@
       <td>{{question.alt1}}</td>
       <td>{{question.alt2}}</td>
       <td>{{question.alt3}}</td>
-      <td>{{question.correct}}</td>
       <td><a href="?id={{ question.id  }}">Endre</a></td>
     </tr>
 {% endfor %}
@@ -35,6 +33,7 @@ _________
 <div class = "container">
    <h2>Update question</h2>
    <form action="{{url_for('updateQuestion')}}" method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
        <div>
            {{ form.question.label }}<br>
            {{ form.question(size=32) }}<br>
@@ -63,26 +62,13 @@ _________
          <span style="color: red;">[{{ error }}]</span>
          {% endfor %}
      </div>
-     <div>
-      {{ form.correct.label }}<br>
-      {{ form.correct(size=32) }}<br>
-      {% for error in form.correct.errors %}
-      <span style="color: red;">[{{ error }}]</span>
-      {% endfor %}
-      </div>
-      <div>
-         {{ form.Quiznavn.label }}<br>
-         {{ form.Quiznavn(size=32) }}<br>
-         {% for error in form.Quiznavn.errors %}
-         <span style="color: red;">[{{ error }}]</span>
-         {% endfor %}
-     </div>
        {{ form.id }}
        <p>{{ form.submit() }}</p>
    </form>
 </div>
 
 <form action="{{url_for('deleteConfirm')}}" method="post">
+   <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
    <button type ="submit" name = "delete" value = "{{id}}">Delete Question</button>
 </form>
 {% endif %}
