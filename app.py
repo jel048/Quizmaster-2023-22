@@ -227,14 +227,15 @@ def answerQuiz():
     if 'question_index' not in session:
         session['question_index'] = 0
     if session['question_index'] == 0:
-        quiz = session['quiz']
+        quiz = session['quiz'] #PROBLEMET ER HER - SESSION QUIZ INNEHOLDER QUIZNAVN, IKKE QUIZID. FIX.
         with MyDb() as db:
             result = db.questionsByQuiz(quiz)
             questions = [Question(*x).__dict__ for x in result]
             session['questions'] = questions
+            print(session['questions'])
     print(f"question index = {session['question_index']}")
     quest = session['questions']
-    question = quest[session['question_index']] #Dictionary
+    question = quest[session['question_index']] #Dictionary  PROBLEMER HER- INDEX OUT OF RANGE?
     form = AnswerQuestionForm(request.form)
     form.alternatives.choices = [(question['alt1'],question['alt1']),(question['alt2'],question['alt2']),(question['alt3'],question['alt3'])]
     
