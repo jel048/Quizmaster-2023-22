@@ -9,7 +9,7 @@ from user import User
 from flask_wtf.csrf import CSRFProtect
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'SUPERSECRET'
+app.config['SECRET_KEY'] = 'SUPERSECRETs'
 csrf = CSRFProtect(app)
 
 login_manager = LoginManager()
@@ -41,6 +41,7 @@ def login():
                     session['isAdmin'] = True
                 else:
                     session['isAdmin'] = False
+                session["userID"] = user.id
             return redirect(url_for('index'))
         
 @app.route('/logout', methods=["GET", "POST"])
@@ -132,6 +133,7 @@ def redirectToQuestionsByQuiz():
 @login_required
 def questionsByQuiz():
     id = request.args.get('id')
+    print(id)
     if not id:
         quiz = session['quiz']
         with MyDb() as db:
@@ -148,23 +150,59 @@ def questionsByQuiz():
     else:
         with MyDb() as db:
             spm = db.getQuestion(id)
-            if spm is None:
-                return render_template('error.html',
-                                       msg='Invalid parameter')
-            else:
-                question = Question(*spm)
-                form = CreateQuestionForm()
-                form.id.data = question.id
-                form.idquiz.data = question.idquiz
-                form.question.data = question.question
-                form.alt1.data = question.alt1
-                form.alt2.data = question.alt2
-                form.alt3.data = question.alt3
-                return render_template("questionsbyquiz.html", form = form, id = id)
+        if spm is None:
+            return render_template('error.html',
+                                   msg='Invalid parameter')
+        else:
+            question = Question(*spm)
+            form = CreateQuestionForm()
+            form.id.data = question.id
+            form.idquiz.data = question.idquiz
+            form.question.data = question.question
+            form.alt1.data = question.alt1
+            form.alt2.data = question.alt2
+            form.alt3.data = question.alt3
+            return render_template("questionsbyquiz.html", form = form, id = form.id.data)
+            
+            
+@app.route("/updatequestion", methods= ["GET", "POST"])
+def updateQuestion():
+    form = CreateQuestionForm(request.form)
+    id = form.id.data
+    if request.method == "POST" and form.validate():
+        id = form.id.data
+        question = form.question.data
+        alt1 = form.alt1.data
+        alt2 = form.alt2.data
+        alt3 = form.alt3.data
+        quest = (question, alt1, alt2, alt3, id)
+        
+        with MyDb() as db:
+            update = db.updateQuestion(quest)
+        
+        return redirect(url_for("questionsByQuiz"))
+    else:
+        return render_template("questionsbyquiz.html", form = form, id = id)
+    
+@app.route("/deleteconfirm", methods= ["GET", "POST"]) #confirm sletting av spm fra questionbyquiz
+def deleteConfirm():
+    id = request.form['delete']
+    with MyDb() as db:
+        q = db.getQuestion(id)
+    question = Question(*q)
+    return render_template("deleteconfirm.html", question = question)
+
+@app.route("/deleteconfirmed", methods= ["GET", "POST"])
+def deleteConfirmed():
+    id = request.form['deleteid']
+    with MyDb() as db:
+        db.deleteQuestion(id)
+    flash("Spørsmål slettet.")
+    
+    return redirect(url_for('questionsByQuiz'))
 
 
-#neste: Questionsbyquiz for admin - fiks quizclasses mot ny database.
-#sørg for at de e fiksa med quizid og questionid
+
 #answerquiz for user
 #admin gå igjennom besvarte quizer - kommentere og godkjenne
 #menyvalg for user å se ferdig godkjente/kommenterte quizer
@@ -183,6 +221,46 @@ def questionsByQuiz():
 @login_required
 def quizzee():
     return render_template("quizzee.html")
+
+@app.route("/answerquiz", methods=["GET", "POST"])
+def answerQuiz():
+    if 'question_index' not in session:
+        session['question_index'] = 0
+    if session['question_index'] == 0:
+        quiz = session['quiz']
+        with MyDb() as db:
+            result = db.questionsByQuiz(quiz)
+            questions = [Question(*x).__dict__ for x in result]
+            session['questions'] = questions
+    print(f"question index = {session['question_index']}")
+    quest = session['questions']
+    question = quest[session['question_index']] #Dictionary
+    form = AnswerQuestionForm(request.form)
+    form.alternatives.choices = [(question['alt1'],question['alt1']),(question['alt2'],question['alt2']),(question['alt3'],question['alt3'])]
+    
+    if request.method == "POST" and form.validate():
+        user_answer = form.alternatives.data
+        with MyDb() as db:
+            db.userAnswer(session["userID"], question['id'], user_answer) #lagrer svaret i databasen
+        if session['question_index'] < len(session['questions']) -1: #sjekk om det er flere spm
+            session['question_index'] += 1
+            return redirect(url_for('answerQuiz'))
+        else: #Siste spm besvart, vis resultat
+            return redirect(url_for('completed'))
+         
+    return render_template("answerquiz.html", question = question, form = form)
+
+@app.route("/quizresults")
+def completed():
+    session['question_index'] = 0
+    session['answers'] = []
+    session['questions'] = []
+    session['quiz'] = None
+    return render_template("completed.html")
+
+@app.route("/myresults") #If quiz godkjent av admin - vises på denne siden. Kan så klikke inn på quiz for å se godkjente spm, og kommentarer.
+def myResults():
+        return render_template("viewscores.html")
 
 
 if __name__ == "__main__":

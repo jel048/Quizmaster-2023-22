@@ -101,7 +101,7 @@ class MyDb:
     def getQuestion(self, id):
         try:
             self.cursor.execute("SELECT questionid, idquiz, question, alt1, alt2, alt3 FROM Qquestions WHERE questionid = (%s)", (id,))
-            result = self.cursor.fetchall()
+            result = self.cursor.fetchone()
         except mysql.connector.Error as err:
                 print(err)
         return result

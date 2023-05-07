@@ -1,8 +1,10 @@
 {% extends 'base.html' %}
 {% block body %}
-<h1>Resultat:</h1>
-<h2>Antall riktige: {{score}}</h2>
+<h1>Quiz fullført!</h1>
+<h2>Svarene dine er sendt inn</h2>
+<h2>Du kan se resultatene etter administrator har godkjent besvarelsen din</h2>
 <form method = "post" action = "{{url_for('quizzee')}}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
     <button type ="submit">Tilbake</button>
 </form>
 {% endblock %}

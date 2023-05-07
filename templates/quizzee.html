@@ -12,7 +12,7 @@
 </div>
 
 <div>
-    <form method = "get" action = "{{url_for('viewMyScores')}}"> 
+    <form method = "get" action = "{{url_for('myResults')}}"> 
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
         <button type = "submit" class = "button" >Mine resultater</button>
     </form>
