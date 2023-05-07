@@ -127,7 +127,20 @@ def redirectToAnswerQuiz():
 def redirectToQuestionsByQuiz():
     session['quiz'] = request.form['quiz']
     return redirect(url_for('questionsByQuiz'))
-    
+
+
+#neste: Questionsbyquiz for admin
+#answerquiz for user
+#admin gå igjennom besvarte quizer - kommentere og godkjenne
+#menyvalg for user å se ferdig godkjente/kommenterte quizer
+#admin mulighet til å slette enkeltspm og hel quiz
+#finn ut hvordan jeg skal gjøre det med å implementere forskjellige typer spm
+#fiks alle templates
+#Gjør litt mer ut av designet
+#Løsningen må ha beskyttelse mot XSS, CSRF og SQL injection
+#publisering på kark
+#rapport, video, kildekode, ERdiagram
+
     
     
     
