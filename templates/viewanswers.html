@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block body %}
+<table>
+    <thead>
+        <th>Quiztaker</th>
+        <th>Quiz</th>
+        <th>Spørsmål</th>
+        <th>Svar</th>
+    </thead>
+    {% for answer in answers %} 
+    <tr>
+        <td>{{answer.quizzee}}</td>
+        <td>{{answer.Quiznavn}}</td>
+        <td>{{answer.question}}</td>
+        <td>{{answer.answer}}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+
+{% endblock %}

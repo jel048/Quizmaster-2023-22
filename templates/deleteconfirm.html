@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block body %}
+
+<h1>Er du sikker på at du vil slette spørsmålet?</h1>
+<table>
+    <thead>
+       <th>Spørsmål</th>
+       <th>Alternativ 1</th>
+       <th>Alternativ 2</th>
+       <th>Alternativ 3</th>
+       <th>Riktig svar</th>
+    </thead>
+    <tbody>
+     <tr>
+       <td>{{question.question}}</td>
+       <td>{{question.alt1}}</td>
+       <td>{{question.alt2}}</td>
+       <td>{{question.alt3}}</td>
+       <td>{{question.correct}}</td>
+
+     </tr>
+    </tbody>
+     
+ </table>
+ <form method = "POST" action ="{{url_for('deleteConfirmed')}}">
+    <button type = "submit" name = "deleteid" value = "{{question.id}}">Bekreft</button>
+ </form>
+ 
+
+
+{% endblock %}

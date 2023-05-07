@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block body %}
+{% if current_user.is_authenticated %}
+        <h1>Suksess!</h1>
+        <p>
+          Du er logget inn som {{ current_user.username }}
+        </p>
+        {% if session['isAdmin'] == True %}
+        <form method = "get" action = "{{url_for('quizMaster')}}"> 
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <button type = "submit" class = "button" >Til administratorsiden</button>
+        </form>
+        {% else %}
+        <form method = "get" action = "{{url_for('quizzee')}}"> 
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <button type = "submit" class = "button" >Til brukersiden</button>
+        </form>
+        {% endif %}
+
+
+        <form action="/logout" method="post">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <input type="submit" name="logout" value="Logout">
+        </form>
+    {% else %}
+        <h3>Du må logge inn</h3>
+        <form action="/login" method="post">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+          <table>
+            <tr><td>Brukernavn: </td>
+              <td><input type="text" name="username"></td></tr>
+            <tr><td>Passord: </td>
+              <td><input type="password" name="password" size="5"></td></tr>
+            <tr><td colspan="2"><input type="submit" name="login" value="Login"></td>
+            </tr>
+          </table>
+        </form>
+    {% endif %}
+
+
+{% endblock %}

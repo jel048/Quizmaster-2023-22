@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block body %}
+<h1>Resultat:</h1>
+<h2>Antall riktige: {{score}}</h2>
+<form method = "post" action = "{{url_for('quizzee')}}">
+    <button type ="submit">Tilbake</button>
+</form>
+{% endblock %}

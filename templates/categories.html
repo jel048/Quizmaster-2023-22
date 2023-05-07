@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block body %}
+<h1>Kategorier</h1>
+<form method = "post" action = "{{url_for('quizByCategory')}}"> 
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+    {% for kategori in kategorier %}
+    <table>
+        <tr>
+            <td><button type = "submit" class = "button" name = "kategori" value = "{{kategori}}" >{{kategori}}</button></td>
+        </tr>
+    </table>
+    {% endfor %}
+</form>
+{% endblock %}

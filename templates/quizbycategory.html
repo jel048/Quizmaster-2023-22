@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block body %}
+<h1>Quizer</h1>
+{% if session['isAdmin'] == True %}
+<form method = "post" action = "{{url_for('redirectToQuestionsByQuiz')}}"> 
+
+    <table>
+    {% for quiz in quizer %}
+        <tr><button type = "submit" class = "button" name = "quiz" value = "{{quiz}}" >{{quiz}}</button></tr> 
+
+    {% endfor %}
+    </table>
+</form>
+{% else %}
+
+<form method = "post" action = "{{url_for('redirectToAnswerQuiz')}}"> 
+
+    <table>
+    {% for quiz in quizer %}
+        <tr><button type = "submit" class = "button" name = "quiz" value = "{{quiz}}" >{{quiz}}</button></tr> 
+
+    {% endfor %}
+    </table>
+</form>
+
+{% endif %}
+
+{% endblock %}

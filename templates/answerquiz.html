@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block body %}
+<h1>{{question['quiznavn']}}</h1>
+<br>
+{{question['question']}}
+<br>
+<div>
+<form method = "POST" action = "{{url_for('answerQuiz')}}">
+{{form.alternatives}}
+{% for error in form.alternatives.errors %}
+    <span style="color: red;">[{{ error }}]</span>
+{% endfor %}
+<br>
+{{form.submit}}
+</form>
+</div>
+
+{% endblock %}

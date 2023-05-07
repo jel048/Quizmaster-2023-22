@@ -1,0 +1,5 @@
+4.5.2023 
+Jobbet med ER-diagram til ny database - 2 timer
+
+6.5.2023
+Jobbet med appen - henter mange biter fra oblig 3 og tilpasser dem til ny database og nye krav - 3.5 timer

@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block body %}
+<h1>Create question</h1>
+
+<div>
+    <form method = "POST" action = "{{url_for('createQuestion')}}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <div>
+            {{form.question.label}}
+            {{form.question}}
+            {% for error in form.question.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </div>
+        <div>
+            {{form.alt1.label}}
+            {{form.alt1}}
+            {% for error in form.alt1.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </div>
+        <div>
+            {{form.alt2.label}}
+            {{form.alt2}}
+            {% for error in form.alt2.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </div>
+        <div>
+            {{form.alt3.label}}
+            {{form.alt3}}
+            {% for error in form.alt3.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </div>
+        <div>
+            {{form.submit()}}
+        </div>
+        
+    </form>
+</div>
+<div>
+    <form method = "POST" action = "{{url_for('quizMaster')}}"> 
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <button type = "submit" class = "loginbutton">Finished</button>
+    </form>
+</div>
+
+{% endblock %}

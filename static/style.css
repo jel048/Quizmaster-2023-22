@@ -1,0 +1,23 @@
+body{
+    font-family: Arial, sans-serif;
+    margin: right = 10em;
+    background: rgb(163, 162, 162);
+    color: rgb(48, 18, 18);
+}
+.kategori {
+    margin: left= 10em;
+}
+input {
+    display:block;
+}
+.table {
+    border-color: blueviolet;
+}
+td, th {
+    border: 1px solid #999;
+    padding: 0.5rem;
+}
+.button {
+    color: blue
+    
+}

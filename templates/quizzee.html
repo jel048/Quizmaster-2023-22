@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block body %}
+
+<h1>Velkommen, {{ current_user.username }}</h1>
+
+
+<div>
+    <form method = "get" action = "{{url_for('viewCategories')}}"> 
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <button type = "submit" class = "button" >Kategorier</button>
+    </form>
+</div>
+
+<div>
+    <form method = "get" action = "{{url_for('viewMyScores')}}"> 
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <button type = "submit" class = "button" >Mine resultater</button>
+    </form>
+</div>
+
+{% endblock %}
+
