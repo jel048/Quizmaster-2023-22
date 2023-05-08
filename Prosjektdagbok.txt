@@ -3,3 +3,10 @@ Jobbet med ER-diagram til ny database - 2 timer
 
 6.5.2023
 Jobbet med appen - henter mange biter fra oblig 3 og tilpasser dem til ny database og nye krav - 3.5 timer
+
+7.5.2023
+Jobber videre med funksjonalitet for admin, og noe for user. 3 timer
+
+8.5.2023
+Fullfører funksjon answerQuiz. Appen har fortsatt bare mulighet for en type spørsmål, flervalg. Må jobbe videre med dette.
+Jobber videre med admin's godkjenning av fullførte quizer og spørsmål. 2 timer

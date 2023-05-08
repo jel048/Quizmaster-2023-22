@@ -132,78 +132,107 @@ def redirectToQuestionsByQuiz():
 @app.route("/questionsbyquiz", methods=["GET", "POST"]) 
 @login_required
 def questionsByQuiz():
-    id = request.args.get('id')
-    print(id)
-    if not id:
-        quiz = session['quiz']
-        with MyDb() as db:
-            id = [(str(item)).strip("\'(),") for item in db.getQuizId(quiz)]
-            quizid = int(id[0])
-        
-        with MyDb() as db:
-            result = db.questionsByQuiz(quizid)
-            questions = [Question(*x) for x in result]
-        if len(questions)< 1: #Redirect om quizen er tom, for å forhindre error
-            return redirect(url_for('quizMaster'))
-        
-        return render_template("questionsbyquiz.html", questions = questions)
-    else:
-        with MyDb() as db:
-            spm = db.getQuestion(id)
-        if spm is None:
-            return render_template('error.html',
-                                   msg='Invalid parameter')
+    if session['isAdmin'] == True:
+        id = request.args.get('id')
+        print(id)
+        if not id:
+            quiz = session['quiz']
+            with MyDb() as db:
+                id = [(str(item)).strip("\'(),") for item in db.getQuizId(quiz)]
+                quizid = int(id[0])
+
+            with MyDb() as db:
+                result = db.questionsByQuiz(quizid)
+                questions = [Question(*x) for x in result]
+            if len(questions)< 1: #Redirect om quizen er tom, for å forhindre error
+                return redirect(url_for('quizMaster'))
+
+            return render_template("questionsbyquiz.html", questions = questions)
         else:
-            question = Question(*spm)
-            form = CreateQuestionForm()
-            form.id.data = question.id
-            form.idquiz.data = question.idquiz
-            form.question.data = question.question
-            form.alt1.data = question.alt1
-            form.alt2.data = question.alt2
-            form.alt3.data = question.alt3
-            return render_template("questionsbyquiz.html", form = form, id = form.id.data)
-            
+            with MyDb() as db:
+                spm = db.getQuestion(id)
+            if spm is None:
+                return render_template('error.html',
+                                       msg='Invalid parameter')
+            else:
+                question = Question(*spm)
+                form = CreateQuestionForm()
+                form.id.data = question.id
+                form.idquiz.data = question.idquiz
+                form.question.data = question.question
+                form.alt1.data = question.alt1
+                form.alt2.data = question.alt2
+                form.alt3.data = question.alt3
+                return render_template("questionsbyquiz.html", form = form, id = form.id.data)
+    else:
+        flash('You are not authorized to view this page')
+        return redirect(url_for('quizzee'))   
+
             
 @app.route("/updatequestion", methods= ["GET", "POST"])
+@login_required
 def updateQuestion():
-    form = CreateQuestionForm(request.form)
-    id = form.id.data
-    if request.method == "POST" and form.validate():
+    if session['isAdmin'] == True:
+        form = CreateQuestionForm(request.form)
         id = form.id.data
-        question = form.question.data
-        alt1 = form.alt1.data
-        alt2 = form.alt2.data
-        alt3 = form.alt3.data
-        quest = (question, alt1, alt2, alt3, id)
-        
-        with MyDb() as db:
-            update = db.updateQuestion(quest)
-        
-        return redirect(url_for("questionsByQuiz"))
+        if request.method == "POST" and form.validate():
+            id = form.id.data
+            question = form.question.data
+            alt1 = form.alt1.data
+            alt2 = form.alt2.data
+            alt3 = form.alt3.data
+            quest = (question, alt1, alt2, alt3, id)
+
+            with MyDb() as db:
+                update = db.updateQuestion(quest)
+
+            return redirect(url_for("questionsByQuiz"))
+        else:
+            return render_template("questionsbyquiz.html", form = form, id = id)
     else:
-        return render_template("questionsbyquiz.html", form = form, id = id)
+        flash('You are not authorized to view this page')
+        return redirect(url_for('quizzee'))
     
 @app.route("/deleteconfirm", methods= ["GET", "POST"]) #confirm sletting av spm fra questionbyquiz
+@login_required
 def deleteConfirm():
-    id = request.form['delete']
-    with MyDb() as db:
-        q = db.getQuestion(id)
-    question = Question(*q)
-    return render_template("deleteconfirm.html", question = question)
+    if session['isAdmin'] == True:
+        id = request.form['delete']
+        with MyDb() as db:
+            q = db.getQuestion(id)
+        question = Question(*q)
+        return render_template("deleteconfirm.html", question = question)
+    else:
+        flash('You are not authorized to view this page')
+        return redirect(url_for('quizzee'))
 
 @app.route("/deleteconfirmed", methods= ["GET", "POST"])
+@login_required
 def deleteConfirmed():
-    id = request.form['deleteid']
-    with MyDb() as db:
-        db.deleteQuestion(id)
-    flash("Spørsmål slettet.")
-    
-    return redirect(url_for('questionsByQuiz'))
+    if session['isAdmin'] == True:
+        id = request.form['deleteid']
+        with MyDb() as db:
+            db.deleteQuestion(id)
+        flash("Spørsmål slettet.")
+
+        return redirect(url_for('questionsByQuiz'))
+    else:
+        flash('You are not authorized to view this page')
+        return redirect(url_for('quizzee'))
+
+@app.route("/approvequizes", methods= ["GET", "POST"])
+@login_required
+def approveQuizes():
+    if session['isAdmin'] == True:
+        return
+    else:
+        flash('You are not authorized to view this page')
+        return redirect(url_for('quizzee'))
 
 
+#skal users kunne lage quizer, og admin godkjenne dem før de er tilgjengelige?
 
-#answerquiz for user
+
 #admin gå igjennom besvarte quizer - kommentere og godkjenne
 #menyvalg for user å se ferdig godkjente/kommenterte quizer
 #admin mulighet til å slette enkeltspm og hel quiz
@@ -223,19 +252,21 @@ def quizzee():
     return render_template("quizzee.html")
 
 @app.route("/answerquiz", methods=["GET", "POST"])
+@login_required
 def answerQuiz():
     if 'question_index' not in session:
         session['question_index'] = 0
     if session['question_index'] == 0:
-        quiz = session['quiz'] #PROBLEMET ER HER - SESSION QUIZ INNEHOLDER QUIZNAVN, IKKE QUIZID. FIX.
+        
         with MyDb() as db:
-            result = db.questionsByQuiz(quiz)
-            questions = [Question(*x).__dict__ for x in result]
-            session['questions'] = questions
-            print(session['questions'])
+            id = [(str(item)).strip("\'(),") for item in db.getQuizId(session['quiz'])]
+            quizid = int(id[0])
+            result = db.questionsByQuiz(quizid)
+        questions = [Question(*x).__dict__ for x in result]
+        session['questions'] = questions
     print(f"question index = {session['question_index']}")
     quest = session['questions']
-    question = quest[session['question_index']] #Dictionary  PROBLEMER HER- INDEX OUT OF RANGE?
+    question = quest[session['question_index']]
     form = AnswerQuestionForm(request.form)
     form.alternatives.choices = [(question['alt1'],question['alt1']),(question['alt2'],question['alt2']),(question['alt3'],question['alt3'])]
     
@@ -252,6 +283,7 @@ def answerQuiz():
     return render_template("answerquiz.html", question = question, form = form)
 
 @app.route("/quizresults")
+@login_required
 def completed():
     session['question_index'] = 0
     session['answers'] = []
@@ -260,6 +292,7 @@ def completed():
     return render_template("completed.html")
 
 @app.route("/myresults") #If quiz godkjent av admin - vises på denne siden. Kan så klikke inn på quiz for å se godkjente spm, og kommentarer.
+@login_required
 def myResults():
         return render_template("viewscores.html")
 
