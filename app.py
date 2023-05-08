@@ -243,8 +243,7 @@ def approveQuizes():
 #publisering på kark
 #rapport, video, kildekode, ERdiagram
 
-    
-    
+
     
 @app.route("/quizzee", methods=["GET", "POST"])
 @login_required
