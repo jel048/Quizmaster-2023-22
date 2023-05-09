@@ -45,3 +45,6 @@ class UserReg:
             self.cursor.execute("INSERT INTO Quser VALUES ((%s), (%s), (%s), (%s))", (id, username, passwordhash, isAdmin))
         except mysql.connector.Error as err:
                 print(err)
+                
+                
+      

@@ -220,15 +220,112 @@ def deleteConfirmed():
         flash('You are not authorized to view this page')
         return redirect(url_for('quizzee'))
 
-@app.route("/approvequizes", methods= ["GET", "POST"])
+@app.route("/approveQuizes", methods= ["GET", "POST"])
 @login_required
 def approveQuizes():
     if session['isAdmin'] == True:
-        return
+        if request.method == "POST":
+            session['quizuser'] = request.form['userid']
+            session['answeredquiz'] = request.form['quiz']
+            return redirect(url_for('reviewQuiz'))
+        else:
+            with MyDb() as db:
+               result = db.showUserQuizes()
+            quizes = [AnsweredQuizes(*x) for x in result]
+            return render_template("quizzesforapproval.html", quizes = quizes)
+    else:
+        flash('You are not authorized to view this page')
+        return redirect(url_for('quizzee'))
+    
+@app.route("/kommenterquiz", methods= ["GET", "POST"])
+@login_required
+def kommenterQuiz():
+    if session['isAdmin'] == True:
+        text = request.form["kommentar"]
+        idquiz = request.form["quizid"]
+        userid = request.form["userid"]
+        with MyDb() as db:
+            kommentar = db.commentQuiz(text, idquiz, userid)
+        return redirect(url_for("approveQuizes"))
     else:
         flash('You are not authorized to view this page')
         return redirect(url_for('quizzee'))
 
+@app.route("/godkjennquiz", methods= ["GET", "POST"])
+@login_required
+def godkjennQuiz():
+    if session['isAdmin'] == True:
+        userid = request.form["userid"]
+        idquiz = request.form["idquiz"]
+        with MyDb() as db:
+            godkjent = db.godkjennQuiz(userid, idquiz)
+        return redirect(url_for("approveQuizes"))
+    else:
+        flash('You are not authorized to view this page')
+        return redirect(url_for('quizzee'))
+    
+@app.route("/reviewquiz", methods= ["GET", "POST"])
+@login_required
+def reviewQuiz():
+    if session['isAdmin'] == True:
+        userid = session['quizuser']
+        quizid = session['answeredquiz']
+        if 'question_index' not in session:
+            session['question_index'] = 0
+        
+        with MyDb() as db:
+            result = db.questionsByQuiz(quizid)
+            userAnswers = db.showUserAnswers(quizid, userid)
+        questions = [Question(*x) for x in result]
+        useranswers = [UserAnswers(*x)for x in userAnswers]
+        question = questions[session['question_index']]
+        answer = useranswers[session['question_index']]
+        
+        if request.method == "POST":
+            if session['question_index'] < len(questions) -1: #sjekk om det er flere spm
+                session['question_index'] += 1
+                return redirect(url_for('reviewQuiz'))
+            else:
+                flash("Gjennomgang fullført")
+                session['question_index'] = 0
+                return redirect(url_for('approveQuizes'))
+        
+        
+        return render_template("reviewquiz.html", question = question, answer = answer)
+                
+                
+    else:
+        flash('You are not authorized to view this page')
+        return redirect(url_for('quizzee'))
+    
+@app.route("/kommenterspm", methods= ["GET", "POST"])
+@login_required
+def kommenterSpm():
+    if session['isAdmin'] == True:
+        text = request.form["kommentar"]
+        questionid = request.form["questionid"]
+        userid = request.form["userid"]
+        with MyDb() as db:
+            kommentar = db.commentQuestion(text, questionid, userid)
+        return redirect(url_for("reviewQuiz"))
+    else:
+        flash('You are not authorized to view this page')
+        return redirect(url_for('quizzee'))
+    
+@app.route("/godkjennspm", methods= ["GET", "POST"])
+@login_required
+def godkjennSpm():
+    if session['isAdmin'] == True:
+        userid = request.form["userid"]
+        questionid = request.form["questionid"]
+        print(userid)
+        print(questionid)
+        with MyDb() as db:
+            godkjent = db.godkjennSpm(userid, questionid)
+        return redirect(url_for("reviewQuiz"))
+    else:
+        flash('You are not authorized to view this page')
+        return redirect(url_for('quizzee'))
 
 #skal users kunne lage quizer, og admin godkjenne dem før de er tilgjengelige?
 
@@ -242,6 +339,7 @@ def approveQuizes():
 #Løsningen må ha beskyttelse mot XSS, CSRF og SQL injection
 #publisering på kark
 #rapport, video, kildekode, ERdiagram
+#select Qquestions.idquiz, Qanswers.userID from Qanswers inner join Qquestions on Qanswers.questionid = Qquestions.questionid group by idquiz
 
 
     
@@ -259,8 +357,8 @@ def answerQuiz():
         
         with MyDb() as db:
             id = [(str(item)).strip("\'(),") for item in db.getQuizId(session['quiz'])]
-            quizid = int(id[0])
-            result = db.questionsByQuiz(quizid)
+            session["quizid"] = int(id[0])
+            result = db.questionsByQuiz(session["quizid"])
         questions = [Question(*x).__dict__ for x in result]
         session['questions'] = questions
     print(f"question index = {session['question_index']}")
@@ -277,6 +375,8 @@ def answerQuiz():
             session['question_index'] += 1
             return redirect(url_for('answerQuiz'))
         else: #Siste spm besvart, vis resultat
+            with MyDb() as db:
+                complete = db.quizcomplete(session["userID"], session["quizid"])
             return redirect(url_for('completed'))
          
     return render_template("answerquiz.html", question = question, form = form)
@@ -288,6 +388,7 @@ def completed():
     session['answers'] = []
     session['questions'] = []
     session['quiz'] = None
+    session["quizid"] = None
     return render_template("completed.html")
 
 @app.route("/myresults") #If quiz godkjent av admin - vises på denne siden. Kan så klikke inn på quiz for å se godkjente spm, og kommentarer.

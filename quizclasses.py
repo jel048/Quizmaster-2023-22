@@ -17,9 +17,19 @@ class Quiz: #Fikses mot ny database
         
         
         
-class UserAnswers: #Fikses mot ny database
-    def __init__(self, quizzee, quiznavn, question, answer):
-        self.quizzee = quizzee
-        self.quiznavn = quiznavn
-        self.question = question
+class UserAnswers:
+    def __init__(self, userID, questionid, answer, godkjent, kommentar = None):
+        self.userID = userID
+        self.questionid = questionid
         self.answer = answer
+        self.godkjent = "Godkjent" if godkjent == 1 else "Ikke Godkjent"
+        self.kommentar = kommentar
+
+class AnsweredQuizes:
+    def __init__(self, quiznavn, idquiz, userID, Username, godkjent, kommentar = None):
+        self.quiznavn = quiznavn
+        self.idquiz = idquiz
+        self.userID = userID
+        self.Username = Username
+        self.godkjent = "Godkjent" if godkjent == 1 else "Ikke Godkjent"
+        self.kommentar = kommentar

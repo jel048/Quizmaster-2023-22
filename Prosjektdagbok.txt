@@ -10,3 +10,6 @@ Jobber videre med funksjonalitet for admin, og noe for user. 3 timer
 8.5.2023
 Fullfører funksjon answerQuiz. Appen har fortsatt bare mulighet for en type spørsmål, flervalg. Må jobbe videre med dette.
 Jobber videre med admin's godkjenning av fullførte quizer og spørsmål. 2 timer
+
+9.5.2023
+Har implementert funksjoner, templates og databasefunksjoner for admins godkjenning og kommentering av besvarte quizer. 4 timer

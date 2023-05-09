@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block body %}
+
+{% if answer.godkjent == "Godkjent" %}
+<h1>Status: {{answer.godkjent}}</h1>
+{% else %}
+<h1>Status: {{answer.godkjent}}</h1>
+<form action = "{{url_for('godkjennSpm')}}" method = "post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+    <input type = "hidden" name ="userid" value = "{{answer.userID}}">
+    <button type = "submit" class = "button" name = "questionid" value = "{{question.id}}" >Godkjenn</button>
+</form>
+
+{% endif %}
+<br>
+<h2>{{question.question}}</h2>
+<br>
+{% if question.alt1 %}
+<h3>Alternativ 1: {{question.alt1}}</h3>
+<h3>Alternativ 2: {{question.alt2}}</h3>
+<h3>Alternativ 3: {{question.alt3}}</h3>
+{% endif %}
+<br>
+
+<h3>Brukeren svarte: {{answer.answer}}</h3>
+<br>
+{% if answer.kommentar %}
+        <p>Kommentar: {{answer.kommentar}}</p>
+{% else %}
+<form action = "{{url_for('kommenterSpm')}}" method = "post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+    <input type ="text" name = "kommentar" maxlength="100">
+    <input type = "hidden" name ="userid" value = "{{answer.userID}}">
+    <button type = "submit" class = "button" name = "questionid" value = "{{question.id}}">Kommenter</button>
+</form>
+{% endif %}
+
+<form method="POST" action = "{{url_for('reviewQuiz')}}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+    <button type = "submit">Neste</button>
+</form>
+
+{% endblock %}

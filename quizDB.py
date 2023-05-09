@@ -124,12 +124,60 @@ class MyDb:
         except mysql.connector.Error as err:
                     print(err)
                     
-    def showUserAnswers(self, userID):
+    def showUserAnswers(self, idquiz, userID):
         try:
-            self.cursor.execute("SELECT userID, questionid, answer FROM Qanswers WHERE userID = (%s)", (userID,))
+            self.cursor.execute("select userID, Qanswers.questionid, answer, godkjent, kommentar from Qanswers inner join Qquestions on \
+                Qanswers.questionid = Qquestions.questionid WHERE idquiz = (%s) and userID = (%s)", (idquiz, userID))
             result = self.cursor.fetchall()
         except mysql.connector.Error as err:
                 print(err)
         return result
     
+    def quizcomplete(self, userID, idquiz):
+        try:
+            self.cursor.execute("INSERT INTO Qquizcomplete (userID, idquiz) VALUES ((%s), (%s))", (userID, idquiz))
+        except mysql.connector.Error as err:
+                print(err)
     
+    def showUserQuizes(self):
+        try:
+            self.cursor.execute("select Qquiz.quiznavn, Qquizcomplete.idquiz, Qquizcomplete.userID, Quser.Username, \
+                Qquizcomplete.godkjent, Qquizcomplete.kommentar from ((Qquiz inner join Qquizcomplete on Qquiz.idquiz\
+                    = Qquizcomplete.idquiz) inner join Quser on Qquizcomplete.userID = Quser.ID)")
+            result = self.cursor.fetchall()
+        except mysql.connector.Error as err:
+                print(err)
+        return result
+    
+    def commentQuiz(self, text, idquiz, userid):
+        try:
+            params = (text, idquiz, userid)
+            sql = "UPDATE Qquizcomplete SET kommentar = %s WHERE idquiz = %s AND userID = %s"
+            self.cursor.execute(sql, params)
+        except mysql.connector.Error as err:
+            print(err)
+            
+    def godkjennQuiz(self, userid, idquiz):
+        try:
+            params = (userid, idquiz)
+            sql = "UPDATE Qquizcomplete SET godkjent = 1 WHERE userID = %s AND idquiz = %s"
+            self.cursor.execute(sql, params)
+        except mysql.connector.Error as err:
+            print(err)
+    
+    def commentQuestion(self, text, questionid, userid):
+        try:
+            params = (text, questionid, userid)
+            sql = "UPDATE Qanswers SET kommentar = %s WHERE questionid = %s AND userID = %s"
+            self.cursor.execute(sql, params)
+        except mysql.connector.Error as err:
+            print(err)
+            
+    def godkjennSpm(self, userid, questionid):
+        try:
+            params = (userid, questionid)
+            sql = "UPDATE Qanswers SET godkjent = 1 WHERE userID = %s AND questionid = %s"
+            self.cursor.execute(sql, params)
+        except mysql.connector.Error as err:
+            print(err)
+            

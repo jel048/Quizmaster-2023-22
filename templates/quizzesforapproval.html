@@ -1,5 +1,42 @@
 {% extends 'base.html' %}
 {% block body %}
+<h2>Besvarte quizer</h2>
+<table>
+    <thead>
+        <th>Quiz</th>
+        <th>Bruker</th>
+        <th>Godkjent</th>
+        <th>Kommentar</th>
+    </thead>
+{% for quiz in quizes %}
+    <tr>
+        <td><form action="{{url_for('approveQuizes')}}" method="post">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <input type = "hidden" name ="userid" value = {{quiz.userID}}>
+            <button type = "submit" class = "button" name = "quiz" value = "{{quiz.idquiz}}" >{{quiz.quiznavn}}</button></form></td>
+        <td>{{quiz.Username}}</td>
+        <td>{{quiz.godkjent}}</td>
 
+        {% if quiz.kommentar %}
+        <td>{{quiz.kommentar}}</td>
+        {% else %}
+        <td><form action = "{{url_for('kommenterQuiz')}}" method = "post">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <input type ="text" name = "kommentar" maxlength="100">
+            <input type = "hidden" name ="userid" value = {{quiz.userID}}>
+            <button type = "submit" class = "button" name = "quizid" value = "{{quiz.idquiz}}">Kommenter</button>
+        </form></td>
+        {% endif %}
+        {% if quiz.godkjent == "Ikke Godkjent" %}
+
+        <td><form action = "{{url_for('godkjennQuiz')}}" method = "post">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <input type = "hidden" name ="userid" value = {{quiz.userID}}>
+            <button type = "submit" class = "button" name = "idquiz" value = "{{quiz.idquiz}}" >Godkjenn</button>
+        </form> </td>
+        {% endif %}
+    </tr>
+
+{% endfor %}
 
 {% endblock %}
