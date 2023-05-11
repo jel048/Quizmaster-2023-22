@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block body %}
+<h1>Quizresultat</h1>
+<table>
+    <thead>
+        <th>Spørsmål</th>
+        <th>Ditt Svar</th>
+        <th>Godkjent</th>
+        <th>Kommentar</th>
+    </thead>
+    
+{% for question in approvedquestions %}
+<tr>
+    <td>{{question.question}}</td>
+    <td>
+        {{question.answer}}
+    </td>
+    <td>
+        {{question.godkjent}}
+    </td>
+    <td>
+        {{question.kommentar}}
+    </td>
+</tr>
+
+{% endfor %}
+
+</table>
+<form action="{{url_for('myResults')}}" method="get">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+    <button type = "submit" class = "button" >Tilbake til oversikt</button>
+{% endblock %}

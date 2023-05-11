@@ -33,3 +33,22 @@ class AnsweredQuizes:
         self.Username = Username
         self.godkjent = "Godkjent" if godkjent == 1 else "Ikke Godkjent"
         self.kommentar = kommentar
+        
+
+class ApprovedQuizes:
+    def __init__(self, idquiz, quiznavn, userID, godkjent, kommentar = None):
+        self.idquiz = idquiz
+        self.quiznavn = quiznavn
+        self.userID = userID
+        self.kommentar = kommentar
+        self.godkjent = "Godkjent" if godkjent == 1 else "Ikke Godkjent"
+
+class ApprovedQuestions:
+    def __init__(self, userID, questionid, question, godkjent, answer, kommentar = None,):
+        self.userID = userID
+        self.questionid = questionid
+        self.question = question
+        self.kommentar = kommentar
+        self.godkjent = "Godkjent" if godkjent == 1 else "Ikke Godkjent"
+        self.answer = answer
+        

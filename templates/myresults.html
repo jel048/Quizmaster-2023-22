@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block body %}
+<h1>Mine resultater</h1>
+<table>
+    <thead>
+        <th>Quiz</th>
+        <th>Godkjent</th>
+        <th>Kommentar</th>
+    </thead>
+    
+{% for quiz in approvedquizes %}
+<tr>
+    <td><form action="{{url_for('myQuizResults')}}" method="post">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <button type = "submit" class = "button" name = "quiz" value = "{{quiz.idquiz}}" >{{quiz.quiznavn}}</button></form>
+    </td>
+    <td>
+        {{quiz.godkjent}}
+    </td>
+    <td>
+        {{quiz.kommentar}}
+    </td>
+</tr>
+
+{% endfor %}
+
+</table>
+{% endblock %}

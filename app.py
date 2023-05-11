@@ -329,8 +329,6 @@ def godkjennSpm():
 
 #skal users kunne lage quizer, og admin godkjenne dem før de er tilgjengelige?
 
-
-#admin gå igjennom besvarte quizer - kommentere og godkjenne
 #menyvalg for user å se ferdig godkjente/kommenterte quizer
 #admin mulighet til å slette enkeltspm og hel quiz
 #finn ut hvordan jeg skal gjøre det med å implementere forskjellige typer spm
@@ -381,7 +379,7 @@ def answerQuiz():
          
     return render_template("answerquiz.html", question = question, form = form)
 
-@app.route("/quizresults")
+@app.route("/completed")
 @login_required
 def completed():
     session['question_index'] = 0
@@ -394,7 +392,21 @@ def completed():
 @app.route("/myresults") #If quiz godkjent av admin - vises på denne siden. Kan så klikke inn på quiz for å se godkjente spm, og kommentarer.
 @login_required
 def myResults():
-        return render_template("viewscores.html")
+    with MyDb() as db:
+        results = db.getQuizesMyResults(session["userID"])
+    approvedquizes = [ApprovedQuizes(*x) for x in results]
+    return render_template("myresults.html", approvedquizes = approvedquizes)
+
+
+@app.route("/myquizresults", methods=["GET", "POST"]) #needs work
+@login_required
+def myQuizResults():
+    quizid = request.form['quiz']
+    with MyDb() as db:
+        results = db.getQuestionsMyResults(session["userID"], quizid)
+    approvedquestions = [ApprovedQuestions(*x) for x in results]
+    return render_template("myquestionresults.html", approvedquestions = approvedquestions)
+
 
 
 if __name__ == "__main__":

@@ -181,3 +181,20 @@ class MyDb:
         except mysql.connector.Error as err:
             print(err)
             
+    def getQuizesMyResults(self, userID): #Viser brukerens godkjente resultater
+        try:
+            self.cursor.execute("Select Qquizcomplete.idquiz, Qquiz.quiznavn, userID, godkjent, kommentar from Qquizcomplete\
+                inner join Qquiz on Qquizcomplete.idquiz = Qquiz.idquiz WHERE godkjent = 1 AND userID = (%s)", (userID,))
+            result = self.cursor.fetchall()
+        except mysql.connector.Error as err:
+                print(err)
+        return result
+    
+    def getQuestionsMyResults(self, userID, quizid):
+        try:
+            self.cursor.execute("select userID, Qanswers.questionid, Qquestions.question, godkjent, answer, kommentar FROM Qanswers INNER JOIN \
+                Qquestions ON Qanswers.questionid = Qquestions.questionid WHERE Qquestions.idquiz = (%s)  AND userID = (%s)", (quizid, userID))
+            result = self.cursor.fetchall()
+        except mysql.connector.Error as err:
+                print(err)
+        return result
