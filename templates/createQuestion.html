@@ -2,6 +2,11 @@
 {% block body %}
 <h1>Create question</h1>
 
+<form method = "GET" action = "{{url_for('createQuestionEssay')}}">
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+<button type = "submit" class = "button" >Klikk her for Essay-spørsmål</button>
+</form>
+
 <div>
     <form method = "POST" action = "{{url_for('createQuestion')}}">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>

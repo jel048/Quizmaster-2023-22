@@ -35,6 +35,11 @@
 </form>
 {% endif %}
 
+<form action = "{{url_for('deleteAnsweredQuestion')}}" method = "post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+    <input type = "hidden" name ="userid" value = "{{answer.userID}}">
+    <button type = "submit" class = "button" name = "questionid" value = "{{question.id}}" onclick="if (!confirm('Are you sure?')) { return false }">Slett spørsmål</button>
+
 <form method="POST" action = "{{url_for('reviewQuiz')}}">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
     <button type = "submit">Neste</button>

@@ -7,8 +7,8 @@
 <div>
 <form method = "POST" action = "{{url_for('answerQuiz')}}">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-{{form.alternatives}}
-{% for error in form.alternatives.errors %}
+{{form.answer}}
+{% for error in form.answer.errors %}
     <span style="color: red;">[{{ error }}]</span>
 {% endfor %}
 <br>

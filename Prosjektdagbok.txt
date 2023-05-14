@@ -16,4 +16,8 @@ Jobber videre med admin's godkjenning av fullførte quizer og spørsmål. 2 time
 Har implementert funksjoner, templates og databasefunksjoner for admins godkjenning og kommentering av besvarte quizer. 4 timer
 
 11.5.2023
-Jobbet med og fullført brukernes mulighet til å se de quizbesvarelser som har blitt godkjent og kommentert av administrator. 2 timer
+Jobbet med og fullført brukernes mulighet til å se de quizbesvarelser som har blitt godkjent og kommentert av administrator. 2 timer¨
+
+14.5.2023
+Har jobbet med og fullført admins mulighet til å slette både hele besvarte quizer og besvarte enkeltspørsmål - 2 timer
+Begynt å jobbe med essay-spørsmål - 2 timer. Fortsett på updatequestion

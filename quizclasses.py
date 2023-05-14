@@ -1,6 +1,6 @@
 class Question:
     
-    def __init__(self, questionid, idquiz, question, alt1, alt2, alt3):
+    def __init__(self, questionid, idquiz, question, alt1 = 0, alt2 = 0, alt3 = 0):
         self.id = questionid
         self.idquiz = idquiz
         self.question = question

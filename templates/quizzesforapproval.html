@@ -35,6 +35,11 @@
             <button type = "submit" class = "button" name = "idquiz" value = "{{quiz.idquiz}}" >Godkjenn</button>
         </form> </td>
         {% endif %}
+        <td><form action = "{{url_for('deleteAnsweredQuiz')}}" method = "post">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <input type = "hidden" name ="userid" value = {{quiz.userID}}>
+            <button type = "submit" class = "button" name = "idquiz" value = "{{quiz.idquiz}}" onclick="if (!confirm('Are you sure?')) { return false }" >Slett besvarelse</button>
+        </form></td>
     </tr>
 
 {% endfor %}

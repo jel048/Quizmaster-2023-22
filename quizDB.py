@@ -58,6 +58,13 @@ class MyDb:
                 (idquiz, question, alt1, alt2, alt3) VALUES ((%s), (%s), (%s),(%s), (%s))", (idquiz, question, alt1, alt2, alt3))
         except mysql.connector.Error as err:
                 print(err)
+                
+    def createQuestionEssay(self, idquiz, question):
+        try:
+            self.cursor.execute("INSERT INTO Qquestions\
+                (idquiz, question) VALUES ((%s), (%s))", (idquiz, question))
+        except mysql.connector.Error as err:
+                print(err)
         
     def createQuiz(self, quiznavn, kategori):
         try:
@@ -198,3 +205,22 @@ class MyDb:
         except mysql.connector.Error as err:
                 print(err)
         return result
+    
+    def deleteAnsweredQuiz(self, userid, quizid):
+        try:
+            self.cursor.execute("DELETE from Qquizcomplete where userID = (%s) and idquiz = (%s)", (userid, quizid))
+        except mysql.connector.Error as err:
+                    print(err)
+                    
+    def deleteQuestionsFromQuiz(self, userid, quizid):
+        try:
+            self.cursor.execute("DELETE Qanswers from Qanswers inner join Qquestions on Qanswers.questionid = Qquestions.questionid\
+                where userID = (%s) and idquiz = (%s)", (userid, quizid))
+        except mysql.connector.Error as err:
+                    print(err)
+                    
+    def deleteAnsweredQuestion(self, userid, questionid):
+        try:
+            self.cursor.execute("DELETE from Qanswers where userID = (%s) and idquiz = (%s)", (userid, questionid))
+        except mysql.connector.Error as err:
+                    print(err)

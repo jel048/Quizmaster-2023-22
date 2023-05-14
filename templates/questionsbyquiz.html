@@ -18,9 +18,13 @@
     
     <tr>
       <td>{{question.question}}</td>
+      {% if question.alt1 == 0 %}
+      <td>Essayspørsmål</td>
+      {% else %}
       <td>{{question.alt1}}</td>
       <td>{{question.alt2}}</td>
       <td>{{question.alt3}}</td>
+      {% endif %}
       <td><a href="?id={{ question.id  }}">Endre</a></td>
     </tr>
 {% endfor %}
@@ -41,6 +45,7 @@ _________
            <span style="color: red;">[{{ error }}]</span>
            {% endfor %}
        </div>
+       {% if selector == 1 %}
        <div>
            {{ form.alt1.label }}<br>
            {{ form.alt1(size=32) }}<br>
@@ -62,6 +67,7 @@ _________
          <span style="color: red;">[{{ error }}]</span>
          {% endfor %}
      </div>
+     {% endif %}
        {{ form.id }}
        <p>{{ form.submit() }}</p>
    </form>

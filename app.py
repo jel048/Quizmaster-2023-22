@@ -9,7 +9,7 @@ from user import User
 from flask_wtf.csrf import CSRFProtect
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'SUPERSECRETs'
+app.config['SECRET_KEY'] = 'SUPERSECRET'
 csrf = CSRFProtect(app)
 
 login_manager = LoginManager()
@@ -96,13 +96,37 @@ def createQuestion():
             with MyDb() as db:
                 db.createQuestion(quizid, question, alt1, alt2, alt3)
                 flash('Spørsmål lagret')
+            form = CreateQuestionForm()
             return render_template("createQuestion.html", form = form)
         else:
+            
             return render_template("createQuestion.html", form = form)
     else:
         flash('You are not authorized to view this page')
         return redirect(url_for('quizzee'))    
     
+@app.route("/createquestionessay", methods=["GET", "POST"])
+@login_required
+def createQuestionEssay():
+    if session['isAdmin'] == True:
+        form = CreateEssayQuestionForm(request.form)
+        with MyDb() as db:
+                id = [(str(item)).strip("\'(),") for item in db.getQuizId(session['quiznavn'])]
+                quizid = int(id[0])
+        if request.method == "POST" and form.validate():
+            question = form.question.data
+            with MyDb() as db:
+                db.createQuestionEssay(quizid, question)
+                flash('Spørsmål lagret')
+            form = CreateEssayQuestionForm()
+            return render_template("createQuestionEssay.html", form = form)
+        else:
+            
+            return render_template("createQuestionEssay.html", form = form)
+    else:
+        flash('You are not authorized to view this page')
+        return redirect(url_for('quizzee'))
+      
     
 @app.route("/viewcategories", methods=["GET"]) #Aksessert fra: quizmaster.html, quizzee.html
 @login_required
@@ -134,7 +158,6 @@ def redirectToQuestionsByQuiz():
 def questionsByQuiz():
     if session['isAdmin'] == True:
         id = request.args.get('id')
-        print(id)
         if not id:
             quiz = session['quiz']
             with MyDb() as db:
@@ -156,21 +179,29 @@ def questionsByQuiz():
                                        msg='Invalid parameter')
             else:
                 question = Question(*spm)
-                form = CreateQuestionForm()
-                form.id.data = question.id
-                form.idquiz.data = question.idquiz
-                form.question.data = question.question
-                form.alt1.data = question.alt1
-                form.alt2.data = question.alt2
-                form.alt3.data = question.alt3
-                return render_template("questionsbyquiz.html", form = form, id = form.id.data)
+                if question.alt1 != 0:
+                    form = CreateQuestionForm()
+                    form.id.data = question.id
+                    form.idquiz.data = question.idquiz
+                    form.question.data = question.question
+                    form.alt1.data = question.alt1
+                    form.alt2.data = question.alt2
+                    form.alt3.data = question.alt3
+                    selector = 1
+                else:
+                    form  = CreateEssayQuestionForm()
+                    form.id.data = question.id
+                    form.idquiz.data = question.idquiz
+                    form.question.data = question.question
+                    selector = 0
+                return render_template("questionsbyquiz.html", form = form, id = form.id.data, selector = selector)
     else:
         flash('You are not authorized to view this page')
         return redirect(url_for('quizzee'))   
 
             
-@app.route("/updatequestion", methods= ["GET", "POST"])
-@login_required
+@app.route("/updatequestion", methods= ["GET", "POST"]) #Fortsett her. Mottar enten CreateQuestionForm eller CreateQuestionFormEssay fra questionsbyQuiz.
+@login_required                                             #Må ha en if-statement.
 def updateQuestion():
     if session['isAdmin'] == True:
         form = CreateQuestionForm(request.form)
@@ -326,18 +357,43 @@ def godkjennSpm():
     else:
         flash('You are not authorized to view this page')
         return redirect(url_for('quizzee'))
+    
+@app.route("/deleteansweredquiz", methods= ["GET", "POST"]) #slett en hel besvart quiz
+@login_required
+def deleteAnsweredQuiz():
+    if session['isAdmin'] == True:
+        userid = request.form['userid']
+        quizid = request.form['idquiz']
+        with MyDb() as db:
+            db.deleteQuestionsFromQuiz(userid, quizid)
+        with MyDb() as db:
+            db.deleteAnsweredQuiz(userid, quizid)
+        return redirect(url_for('approveQuizes'))
+    else:
+        flash('You are not authorized to view this page')
+        return redirect(url_for('quizzee'))
+    
+@app.route("/deleteansweredquestion", methods= ["GET", "POST"]) #slett ett besvart spørsmål inni en quiz
+@login_required
+def deleteAnsweredQuestion():
+    if session['isAdmin'] == True:
+        userid = request.form['userid']
+        questionid = request.form['questionid']
+        with MyDb() as db:
+            db.deleteAnsweredQuestion(userid, questionid)
+        flash("Spørsmål slettet")
+        return redirect(url_for('approveQuizes'))
+    else:
+        flash('You are not authorized to view this page')
+        return redirect(url_for('quizzee'))
 
-#skal users kunne lage quizer, og admin godkjenne dem før de er tilgjengelige?
-
-#menyvalg for user å se ferdig godkjente/kommenterte quizer
-#admin mulighet til å slette enkeltspm og hel quiz
+#answerquiz essay textbox må gjøres større.
+#omgjør alle alt1 = 0 til alt1 = None
 #finn ut hvordan jeg skal gjøre det med å implementere forskjellige typer spm
 #fiks alle templates
 #Gjør litt mer ut av designet
-#Løsningen må ha beskyttelse mot XSS, CSRF og SQL injection
 #publisering på kark
 #rapport, video, kildekode, ERdiagram
-#select Qquestions.idquiz, Qanswers.userID from Qanswers inner join Qquestions on Qanswers.questionid = Qquestions.questionid group by idquiz
 
 
     
@@ -362,11 +418,16 @@ def answerQuiz():
     print(f"question index = {session['question_index']}")
     quest = session['questions']
     question = quest[session['question_index']]
-    form = AnswerQuestionForm(request.form)
-    form.alternatives.choices = [(question['alt1'],question['alt1']),(question['alt2'],question['alt2']),(question['alt3'],question['alt3'])]
+    print(question['alt1'])
+    if question['alt1'] != None: #Testing for essayQuestions
+        form = AnswerQuestionForm(request.form)
+        form.answer.choices = [(question['alt1'],question['alt1']),(question['alt2'],question['alt2']),(question['alt3'],question['alt3'])]
+    else:
+        form = AnswerQuestionFormEssay(request.form)
+        
     
     if request.method == "POST" and form.validate():
-        user_answer = form.alternatives.data
+        user_answer = form.answer.data 
         with MyDb() as db:
             db.userAnswer(session["userID"], question['id'], user_answer) #lagrer svaret i databasen
         if session['question_index'] < len(session['questions']) -1: #sjekk om det er flere spm

@@ -12,9 +12,20 @@ class CreateQuestionForm(Form):
     alt3 = StringField('Alternativ 3', validators =[DataRequired()])
     submit = SubmitField('Create')
 
+class CreateEssayQuestionForm(Form):
+    id = HiddenField()
+    idquiz = HiddenField()
+    question = StringField('Spørsmål', validators =[DataRequired()])
+    submit = SubmitField('Create')
+
 class AnswerQuestionForm(Form): 
-    alternatives = RadioField('Alternativ:', choices=[('alt1','description'),('alt2','whatever'),('alt3','whatever')]) #form.alternatives.choices = (question.alt1,question.alt1),(question.alt2,question.alt2),(question.alt3,question.alt3)
+    answer = RadioField('Alternativ:', choices=[('alt1','description'),('alt2','whatever'),('alt3','whatever')]) #form.alternatives.choices = (question.alt1,question.alt1),(question.alt2,question.alt2),(question.alt3,question.alt3)
     submit = SubmitField('Neste')
+
+class AnswerQuestionFormEssay(Form): 
+    answer = StringField('Svar', validators =[DataRequired()])
+    submit = SubmitField('Neste')
+
     
 class quizForm(Form):
     quiznavn = StringField('Quiznavn', validators =[DataRequired()])
