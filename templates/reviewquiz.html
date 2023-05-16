@@ -10,12 +10,17 @@
     <input type = "hidden" name ="userid" value = "{{answer.userID}}">
     <button type = "submit" class = "button" name = "questionid" value = "{{question.id}}" >Godkjenn</button>
 </form>
-
 {% endif %}
+
+<form action = "{{url_for('deleteAnsweredQuestion')}}" method = "post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+    <input type = "hidden" name ="userid" value = "{{answer.userID}}">
+    <button type = "submit" class = "button" name = "questionid" value = "{{question.id}}" onclick="if (!confirm('Are you sure?')) { return false }">Slett spørsmål</button>
+</form>
 <br>
 <h2>{{question.question}}</h2>
 <br>
-{% if question.alt1 %}
+{% if question.alt1 != None %}
 <h3>Alternativ 1: {{question.alt1}}</h3>
 <h3>Alternativ 2: {{question.alt2}}</h3>
 <h3>Alternativ 3: {{question.alt3}}</h3>
@@ -35,10 +40,7 @@
 </form>
 {% endif %}
 
-<form action = "{{url_for('deleteAnsweredQuestion')}}" method = "post">
-    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-    <input type = "hidden" name ="userid" value = "{{answer.userID}}">
-    <button type = "submit" class = "button" name = "questionid" value = "{{question.id}}" onclick="if (!confirm('Are you sure?')) { return false }">Slett spørsmål</button>
+
 
 <form method="POST" action = "{{url_for('reviewQuiz')}}">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>

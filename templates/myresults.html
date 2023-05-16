@@ -17,9 +17,15 @@
     <td>
         {{quiz.godkjent}}
     </td>
+    {% if quiz.kommentar %}
     <td>
         {{quiz.kommentar}}
     </td>
+    {% else %}
+    <td>
+        -
+    </td>
+    {% endif %}
 </tr>
 
 {% endfor %}

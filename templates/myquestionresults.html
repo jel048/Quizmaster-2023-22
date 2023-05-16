@@ -18,9 +18,15 @@
     <td>
         {{question.godkjent}}
     </td>
+    {% if question.kommentar %}
     <td>
         {{question.kommentar}}
     </td>
+    {% else %}
+    <td>
+        -
+    </td>
+    {% endif %}
 </tr>
 
 {% endfor %}

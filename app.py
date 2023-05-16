@@ -9,7 +9,7 @@ from user import User
 from flask_wtf.csrf import CSRFProtect
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'SUPERSECRET'
+app.config['SECRET_KEY'] = 'SUPERSECRETs'
 csrf = CSRFProtect(app)
 
 login_manager = LoginManager()
@@ -179,7 +179,7 @@ def questionsByQuiz():
                                        msg='Invalid parameter')
             else:
                 question = Question(*spm)
-                if question.alt1 != 0:
+                if question.alt1 != None:
                     form = CreateQuestionForm()
                     form.id.data = question.id
                     form.idquiz.data = question.idquiz
@@ -200,8 +200,8 @@ def questionsByQuiz():
         return redirect(url_for('quizzee'))   
 
             
-@app.route("/updatequestion", methods= ["GET", "POST"]) #Fortsett her. Mottar enten CreateQuestionForm eller CreateQuestionFormEssay fra questionsbyQuiz.
-@login_required                                             #Må ha en if-statement.
+@app.route("/updatequestion", methods= ["GET", "POST"]) #Oppdater spørsmål. Sjekker om det er alternativ-spm eller essay-spm og oppdaterer deretter.
+@login_required                                             
 def updateQuestion():
     if session['isAdmin'] == True:
         form = CreateQuestionForm(request.form)
@@ -209,13 +209,24 @@ def updateQuestion():
         if request.method == "POST" and form.validate():
             id = form.id.data
             question = form.question.data
-            alt1 = form.alt1.data
-            alt2 = form.alt2.data
-            alt3 = form.alt3.data
+            alt1 = form.alt1.data if form.alt1.data else "NULL"
+            alt2 = form.alt2.data if form.alt2.data else "NULL"
+            alt3 = form.alt3.data if form.alt3.data else "NULL"
             quest = (question, alt1, alt2, alt3, id)
 
             with MyDb() as db:
                 update = db.updateQuestion(quest)
+
+            return redirect(url_for("questionsByQuiz"))
+        elif request.method == "POST":
+            form = CreateEssayQuestionForm(request.form)
+            if form.validate():
+                id = form.id.data
+                question = form.question.data
+                quest = (question, id)
+
+            with MyDb() as db:
+                update = db.updateQuestionEssay(quest)
 
             return redirect(url_for("questionsByQuiz"))
         else:
@@ -309,11 +320,15 @@ def reviewQuiz():
             userAnswers = db.showUserAnswers(quizid, userid)
         questions = [Question(*x) for x in result]
         useranswers = [UserAnswers(*x)for x in userAnswers]
-        question = questions[session['question_index']]
         answer = useranswers[session['question_index']]
+        answerid = answer.questionid
+        for i in questions:
+            if i.id == answerid:
+                question = i
+        
         
         if request.method == "POST":
-            if session['question_index'] < len(questions) -1: #sjekk om det er flere spm
+            if session['question_index'] < len(useranswers) -1: #sjekk om det er flere spm
                 session['question_index'] += 1
                 return redirect(url_for('reviewQuiz'))
             else:
@@ -382,15 +397,13 @@ def deleteAnsweredQuestion():
         with MyDb() as db:
             db.deleteAnsweredQuestion(userid, questionid)
         flash("Spørsmål slettet")
+        session['question_index'] = 0
         return redirect(url_for('approveQuizes'))
     else:
         flash('You are not authorized to view this page')
         return redirect(url_for('quizzee'))
 
-#answerquiz essay textbox må gjøres større.
-#omgjør alle alt1 = 0 til alt1 = None
-#finn ut hvordan jeg skal gjøre det med å implementere forskjellige typer spm
-#fiks alle templates
+#Legg til kommentarer på funksjonene
 #Gjør litt mer ut av designet
 #publisering på kark
 #rapport, video, kildekode, ERdiagram
@@ -459,7 +472,7 @@ def myResults():
     return render_template("myresults.html", approvedquizes = approvedquizes)
 
 
-@app.route("/myquizresults", methods=["GET", "POST"]) #needs work
+@app.route("/myquizresults", methods=["GET", "POST"]) 
 @login_required
 def myQuizResults():
     quizid = request.form['quiz']

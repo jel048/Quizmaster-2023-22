@@ -18,8 +18,10 @@
     
     <tr>
       <td>{{question.question}}</td>
-      {% if question.alt1 == 0 %}
+      {% if question.alt1 == None %}
       <td>Essayspørsmål</td>
+      <td>-</td>
+      <td>-</td>
       {% else %}
       <td>{{question.alt1}}</td>
       <td>{{question.alt2}}</td>

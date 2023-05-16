@@ -124,6 +124,18 @@ class MyDb:
                     self.cursor.execute(sql, question)
                 except mysql.connector.Error as err:
                     print(err)
+    
+    def updateQuestionEssay(self, question):
+                
+                try:
+                    sql = '''UPDATE Qquestions
+                    SET
+                    question = %s
+                    WHERE
+                    questionid = %s'''
+                    self.cursor.execute(sql, question)
+                except mysql.connector.Error as err:
+                    print(err)
                     
     def deleteQuestion(self, id):
         try:
@@ -221,6 +233,6 @@ class MyDb:
                     
     def deleteAnsweredQuestion(self, userid, questionid):
         try:
-            self.cursor.execute("DELETE from Qanswers where userID = (%s) and idquiz = (%s)", (userid, questionid))
+            self.cursor.execute("DELETE from Qanswers where userID = (%s) and questionid = (%s)", (userid, questionid))
         except mysql.connector.Error as err:
                     print(err)

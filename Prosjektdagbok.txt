@@ -21,3 +21,8 @@ Jobbet med og fullført brukernes mulighet til å se de quizbesvarelser som har 
 14.5.2023
 Har jobbet med og fullført admins mulighet til å slette både hele besvarte quizer og besvarte enkeltspørsmål - 2 timer
 Begynt å jobbe med essay-spørsmål - 2 timer. Fortsett på updatequestion
+
+
+16.5.2023
+Fullført funksjonalitet for å opprette, besvare, og gå igjennom essay-spørsmål i tillegg til multiple choice. - 2 timer
+Mengdetesting for å avdekke og fikse bugs. -1 time
