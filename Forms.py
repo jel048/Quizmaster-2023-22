@@ -1,6 +1,6 @@
-from wtforms import Form, BooleanField,StringField, SubmitField, RadioField, validators
-from wtforms.validators import DataRequired, Email, Length
-from wtforms.fields import TextAreaField, HiddenField, EmailField
+from wtforms import Form, StringField, SubmitField, RadioField, validators
+from wtforms.validators import DataRequired
+from wtforms.fields import  HiddenField, TextAreaField
 
 
 class CreateQuestionForm(Form):
