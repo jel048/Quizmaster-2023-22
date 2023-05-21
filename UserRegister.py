@@ -39,10 +39,10 @@ class UserReg:
                 print(err)
         return result
     
-    def registerUser(self, id, username, password, isAdmin):
+    def registerUser(self, username, password, isAdmin):
         passwordhash = generate_password_hash(password)
         try:
-            self.cursor.execute("INSERT INTO Quser VALUES ((%s), (%s), (%s), (%s))", (id, username, passwordhash, isAdmin))
+            self.cursor.execute("INSERT INTO Quser VALUES ((%s), (%s), (%s))", (username, passwordhash, isAdmin))
         except mysql.connector.Error as err:
                 print(err)
                 
