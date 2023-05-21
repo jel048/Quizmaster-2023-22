@@ -23,7 +23,7 @@ class AnswerQuestionForm(Form):
     submit = SubmitField('Neste')
 
 class AnswerQuestionFormEssay(Form): 
-    answer = StringField('Svar',render_kw={"style" : "height: 100px; width: 150px;"}, validators =[DataRequired()])
+    answer = TextAreaField('Svar', validators =[DataRequired()])
     submit = SubmitField('Neste')
 
     

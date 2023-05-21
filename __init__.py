@@ -403,11 +403,6 @@ def deleteAnsweredQuestion():
         flash('You are not authorized to view this page')
         return redirect(url_for('quizzee'))
 
-#Legg til kommentarer på funksjonene
-#Gjør litt mer ut av designet
-#publisering på kark
-#rapport, video, kildekode, ERdiagram
-
 
     
 @app.route("/quizzee", methods=["GET", "POST"])

@@ -1,28 +1,32 @@
-4.5.2023 
-Jobbet med ER-diagram til ny database - 2 timer
+4.5.2023 - 2 timer
+Jobbet med ER-diagram til ny database 
 
-6.5.2023
-Jobbet med appen - henter mange biter fra oblig 3 og tilpasser dem til ny database og nye krav - 3.5 timer
+6.5.2023- 3.5 timer
+Jobbet med appen - henter mange biter fra oblig 3 og tilpasser dem til ny database og nye krav 
 
-7.5.2023
-Jobber videre med funksjonalitet for admin, og noe for user. 3 timer
+7.5.2023 - 3 timer
+Jobber videre med funksjonalitet for admin, og noe for user. 
 
-8.5.2023
+8.5.2023 - 2 timer
 Fullfører funksjon answerQuiz. Appen har fortsatt bare mulighet for en type spørsmål, spørsmål med alternativer. Må implementere muligheten for å
 kunne svare med tekst (essay) senere.
-Jobber videre med admin's godkjenning av fullførte quizer og spørsmål. 2 timer
+Jobber videre med admin's godkjenning av fullførte quizer og spørsmål.
 
-9.5.2023
-Har implementert funksjoner, templates og databasefunksjoner for admins godkjenning og kommentering av besvarte quizer. 4 timer
+9.5.2023 -4 timer
+Har implementert funksjoner, templates og databasefunksjoner for admins godkjenning og kommentering av besvarte quizer. 
 
-11.5.2023
-Jobbet med og fullført brukernes mulighet til å se de quizbesvarelser som har blitt godkjent og kommentert av administrator. 2 timer¨
+11.5.2023 - 2 timer
+Jobbet med og fullført brukernes mulighet til å se de quizbesvarelser som har blitt godkjent og kommentert av administrator. 
 
-14.5.2023
-Har jobbet med og fullført admins mulighet til å slette både hele besvarte quizer og besvarte enkeltspørsmål - 2 timer
-Begynt å jobbe med essay-spørsmål - 2 timer. Fortsett på updatequestion
+14.5.2023- 4 timer
+Har jobbet med og fullført admins mulighet til å slette både hele besvarte quizer og besvarte enkeltspørsmål 
+Begynt å jobbe med essay-spørsmål  Fortsett på updatequestion
 
 
-16.5.2023
+16.5.2023 -1 time
 Fullført funksjonalitet for å opprette, besvare, og gå igjennom essay-spørsmål i tillegg til multiple choice. - 2 timer
-Mengdetesting for å avdekke og fikse bugs. -1 time
+Mengdetesting for å avdekke og fikse bugs. 
+
+21.5.2023 - 4 timer
+Lagt til blokk for tittel i base.html - og titler i hver template. Lagt til informasjon i README.txt. Begynt å skrive prosjektrapport. 
+Prøver - og sliter med - å få applikasjonen til å fungere på kark. 
