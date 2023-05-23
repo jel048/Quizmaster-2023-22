@@ -1,4 +1,5 @@
 Kark: https://kark.uit.no/~jel048/flask_app
+Coderefinery: https://source.coderefinery.org/jel048/Quizmaster-2023-22
 
 Administrator: Brukernavn: admin 	Passord: admin
 Har opprettet 3 brukere:
