@@ -5,9 +5,9 @@ class MyDb:
 
     def __init__(self) -> None:
         dbconfig = {'host': 'kark.uit.no',
-                    'user': 'stud_v23_jel048',
-                    'password': 'jel048',
-                    'database': 'stud_v23_jel048' }
+                    'user': '',
+                    'password': '',
+                    'database': '' }
         self.configuration = dbconfig
         
 
